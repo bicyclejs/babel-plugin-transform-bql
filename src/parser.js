@@ -33,18 +33,31 @@ function parse(tokens) {
     assert(closeBracket.type === 'Bracket' && closeBracket.val === '}');
     return {type: 'FieldSet', body};
   }
+  function parseAlias() {
+    const keyword = tokens.advance();
+    assert(keyword.type === 'Keyword' && keyword.val === 'as');
+    const identifier = tokens.advance();
+    assert(identifier.type === 'Identifier');
+    return identifier.val;
+
+  }
   function parseField() {
     const identifier = tokens.advance();
     assert(identifier.type === 'Identifier');
     let args = null;
     let body = null;
+    let alias = null;
     if (tokens.peek().type === 'Bracket' && tokens.peek().val === '(') {
       args = parseArgs();
+    }
+    if (tokens.peek().type === 'Keyword' && tokens.peek().val === 'as') {
+      alias = parseAlias();
+      if (alias === identifier.val) alias = null;
     }
     if (tokens.peek().type === 'Bracket' && tokens.peek().val === '{') {
       body = parseFieldSet();
     }
-    return {type: 'Field', name: identifier.val, args, body};
+    return {type: 'Field', name: identifier.val, args, alias, body};
   }
   function parseBody() {
     const body = [];

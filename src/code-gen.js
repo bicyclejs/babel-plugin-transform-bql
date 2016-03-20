@@ -23,7 +23,12 @@ function codeGen(t, ast) {
       value = t.booleanLiteral(true);
     }
     if (!ast.args || ast.args.length === 0) {
-      return t.objectProperty(t.identifier(name), value);
+      return t.objectProperty(
+        ast.alias
+        ? t.stringLiteral(name + ' as ' + ast.alias)
+        : t.identifier(name),
+        value,
+      );
     } else {
       const args = ast.args.slice().sort(
         (a, b) => (a.name < b.name ? -1 : 1),
@@ -50,6 +55,9 @@ function codeGen(t, ast) {
         }
       });
       push(')');
+      if (ast.alias) {
+        push(' as ' + ast.alias);
+      }
       if (parts.length === 1) {
         return t.objectProperty(t.stringLiteral(parts[0]), value);
       } else {
