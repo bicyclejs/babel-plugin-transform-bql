@@ -5,10 +5,10 @@ const query = bql`
     id,
     name
   }
-  event(year: 2016, month: 3, day: 20) as dayOne {
+  event(year: 2016, month: 'March', day: 20) as dayOne {
     title
   }
-  event(year: 2016, month: 3, day: 21) as dayTwo {
+  event(year: 2016, month: 'March', day: 21) as dayTwo {
     title
   }
 `;

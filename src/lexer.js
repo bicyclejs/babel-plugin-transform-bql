@@ -32,7 +32,10 @@ function lex({quasis, expressions}) {
           val += str[i++];
         }
         if (str[i] === quote) {
+          str = str.substr(i + 1);
           return {type: 'String', val: JSON.parse('"' + val + '"'), line};
+        } else {
+          throw new Error('Missing closing quote');
         }
       }
       return null;
