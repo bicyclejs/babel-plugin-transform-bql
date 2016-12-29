@@ -59,6 +59,13 @@ function parse(tokens) {
     }
     return {type: 'Field', name: identifier.val, args, alias, body};
   }
+  function parseSpread() {
+    const spread = tokens.advance();
+    assert(spread.type === 'Spread');
+    const arg = tokens.advance();
+    assert(arg.type === 'Expression');
+    return {type: 'Spread', arg};
+  }
   function parseBody() {
     const body = [];
     while ((tokens.peek().type !== 'Bracket' || tokens.peek().val !== '}') && tokens.peek().type !== 'End') {
@@ -66,10 +73,10 @@ function parse(tokens) {
         case 'Identifier':
           body.push(parseField());
           break;
-        /*
         case 'Spread':
           body.push(parseSpread());
           break;
+        /*
         case 'Keyword':
           body.push(parseKeyword());
           break;

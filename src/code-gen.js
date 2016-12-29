@@ -82,12 +82,18 @@ function codeGen(t, ast) {
       }
     }
   }
+  function genSpread(ast) {
+    const val = ast.arg.val;
+    return t.spreadProperty(val);
+  }
   function genNode(ast) {
     switch (ast.type) {
       case 'FieldSet':
         return genFieldSet(ast);
       case 'Field':
         return genField(ast);
+      case 'Spread':
+        return genSpread(ast);
       default:
         throw new Error('Unexpeced node type ' + ast.type);
     }
