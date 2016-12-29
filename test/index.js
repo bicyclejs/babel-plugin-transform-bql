@@ -12,5 +12,6 @@ test('transforms code correctly', () => {
       plugins: [babelPluginTransformBql],
     },
   );
-  console.log(output.code);
+  fs.writeFileSync(__dirname + '/test-cases/basic-example.output.js', '/* eslint-disable */\n\n' + output.code);
+  console.log(require('./test-cases/basic-example.output.js'));
 });

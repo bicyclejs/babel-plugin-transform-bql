@@ -1,14 +1,28 @@
 import assert from 'assert';
 
-function codeGen(t, ast) {
+function codeGen(t, ast, {getMergeBqlQueries}) {
+  getMergeBqlQueries();
   const JSONStringify = t.memberExpression(
     t.identifier('JSON'),
     t.identifier('stringify'),
   );
   function genFieldSet(ast) {
     assert(ast.type === 'FieldSet');
-    const properties = ast.body.map(genNode);
-    return t.objectExpression(properties);
+    const properties = ast.body.filter(node => node.type !== 'Spread').map(genNode);
+    const merge = ast.body.filter(node => node.type === 'Spread');
+    let obj = t.objectExpression(properties);
+    obj._isBqlOutput = true;
+    merge.forEach(node => {
+      obj = t.callExpression(
+        getMergeBqlQueries(),
+        [
+          obj,
+          node.arg.val,
+        ],
+      );
+      obj._isBqlOutput = true;
+    });
+    return obj;
   }
   function isConstantValue(value) {
     return value.type === 'String' || value.type === 'Bool' || value.type === 'Number';
@@ -82,18 +96,12 @@ function codeGen(t, ast) {
       }
     }
   }
-  function genSpread(ast) {
-    const val = ast.arg.val;
-    return t.spreadProperty(val);
-  }
   function genNode(ast) {
     switch (ast.type) {
       case 'FieldSet':
         return genFieldSet(ast);
       case 'Field':
         return genField(ast);
-      case 'Spread':
-        return genSpread(ast);
       default:
         throw new Error('Unexpeced node type ' + ast.type);
     }

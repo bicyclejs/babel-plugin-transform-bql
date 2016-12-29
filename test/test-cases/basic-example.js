@@ -1,25 +1,46 @@
 /* global bql, myUserID */
 
-const imageQuery = bql`
-  square
-  small
-  large
+let imageQuery = bql`
+  image {
+    square
+    small
+    large
+  }
 `;
-const query = bql`
-  user(id: ${myUserID}) {
-    id,
-    name
-    image {
+const eventQuery = bql`
+  date
+  location
+`;
+const defaultLength = 10;
+function getQuery(myUserID) {
+  return bql`
+    user(id: ${myUserID}) {
+      id,
+      name
+      image {
+        circle
+      }
       ...${imageQuery}
     }
-  }
-  // you can use aliases to query the same field twice
-  event(year: 2016, month: 'March', day: 20) as dayOne {
-    title
-  }
-  event(year: 2016, month: 'March', day: 21) as dayTwo {
-    title
+    // you can use aliases to query the same field twice
+    event(year: 2016, month: 'March', day: 20) as dayOne {
+      title(length: ${10})
+      ...${eventQuery}
+    }
+    event(year: 2016, month: 'March', day: 21) as dayTwo {
+      title(length: ${defaultLength})
+      ...${eventQuery}
+    }
+  `;
+}
+
+
+imageQuery = bql`
+  image {
+    square
+    small
   }
 `;
 
-console.log(query);
+
+module.exports = getQuery(10);
