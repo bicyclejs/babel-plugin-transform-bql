@@ -12,15 +12,17 @@ const eventQuery = bql`
   location
 `;
 const defaultLength = 10;
-function getQuery(myUserID) {
+function getQuery(myUserID, includeImage) {
   return bql`
     user(id: ${myUserID}) {
       id,
       name
-      image {
-        circle
+      if ${includeImage} {
+        image {
+          circle
+        }
+        ...${imageQuery}
       }
-      ...${imageQuery}
     }
     // you can use aliases to query the same field twice
     event(year: 2016, month: 'March', day: 20) as dayOne {

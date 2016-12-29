@@ -8,8 +8,11 @@ function codeGen(t, ast, {getMergeBqlQueries}) {
   );
   function genFieldSet(ast) {
     assert(ast.type === 'FieldSet');
-    const properties = ast.body.filter(node => node.type !== 'Spread').map(genNode);
+    const properties = ast.body.filter(
+      node => node.type !== 'Spread' && node.type !== 'Conditional',
+    ).map(genNode);
     const merge = ast.body.filter(node => node.type === 'Spread');
+    const conditionals = ast.body.filter(node => node.type === 'Conditional');
     let obj = t.objectExpression(properties);
     obj._isBqlOutput = true;
     merge.forEach(node => {
@@ -18,6 +21,20 @@ function codeGen(t, ast, {getMergeBqlQueries}) {
         [
           obj,
           node.arg.val,
+        ],
+      );
+      obj._isBqlOutput = true;
+    });
+    conditionals.forEach(({condition, consequent, alternate}) => {
+      obj = t.callExpression(
+        getMergeBqlQueries(),
+        [
+          obj,
+          t.conditionalExpression(
+            condition.val,
+            genFieldSet(consequent),
+            alternate ? genFieldSet(alternate) : t.nullLiteral(),
+          ),
         ],
       );
       obj._isBqlOutput = true;

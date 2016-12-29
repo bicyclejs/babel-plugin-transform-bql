@@ -66,6 +66,20 @@ function parse(tokens) {
     assert(arg.type === 'Expression');
     return {type: 'Spread', arg};
   }
+  function parseKeyword() {
+    const keyword = tokens.advance();
+    assert(keyword.type === 'Keyword');
+    assert(keyword.val === 'if');
+    const condition = tokens.advance();
+    assert(condition.type === 'Expression');
+    const consequent = parseFieldSet();
+    let alternate = null;
+    if (tokens.peek().type !== 'Keyword' && tokens.peek().val === 'else') {
+      tokens.advance();
+      alternate = parseFieldSet();
+    }
+    return {type: 'Conditional', condition, consequent, alternate};
+  }
   function parseBody() {
     const body = [];
     while ((tokens.peek().type !== 'Bracket' || tokens.peek().val !== '}') && tokens.peek().type !== 'End') {
@@ -75,6 +89,9 @@ function parse(tokens) {
           break;
         case 'Spread':
           body.push(parseSpread());
+          break;
+        case 'Keyword':
+          body.push(parseKeyword());
           break;
         /*
         case 'Keyword':

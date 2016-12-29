@@ -1,6 +1,9 @@
 /* eslint no-unused-vars: 0, new-cap: 0 */
 
 function MERGE_QUERIES(firstQuery, secondQuery) {
+  if (secondQuery === null) {
+    return firstQuery;
+  }
   const result = {};
   let firstQueryUpdated = false;
   let secondQueryUpdated = false;
