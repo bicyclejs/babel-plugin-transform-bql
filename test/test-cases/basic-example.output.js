@@ -47,4 +47,4 @@ imageQuery = {
   }
 };
 
-module.exports = getQuery(10);
+module.exports = getQuery(10, true);
