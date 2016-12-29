@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-bql",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "main": "lib/index.js",
   "description": "Transform the high level bicycle query language within template strings into the object spec expected by bicycle",
   "keywords": [],
