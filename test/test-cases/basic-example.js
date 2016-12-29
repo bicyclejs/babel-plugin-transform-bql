@@ -13,6 +13,7 @@ const query = bql`
       ...${imageQuery}
     }
   }
+  // you can use aliases to query the same field twice
   event(year: 2016, month: 'March', day: 20) as dayOne {
     title
   }

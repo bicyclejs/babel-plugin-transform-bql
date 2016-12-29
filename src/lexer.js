@@ -86,22 +86,31 @@ function lex({quasis, expressions}) {
       }
       return null;
     }
+    function lexComment() {
+      if (str[0] === '/' && str[1] === '/') {
+        str = str.substr(str.indexOf('\n'));
+        return true;
+      }
+      return false;
+    }
     function fail() {
       throw new Error('Unable to lex at "' + str + '"');
     }
     trim();
     while (str.length) {
-      tokens.push(
-        lexKeyword() ||
-        lexString() ||
-        lexBool() ||
-        lexNumber() ||
-        lexBracket() ||
-        lexColon() ||
-        lexSpread() ||
-        lexIdentifier() ||
-        fail()
-      );
+      if (!lexComment()) {
+        tokens.push(
+          lexKeyword() ||
+          lexString() ||
+          lexBool() ||
+          lexNumber() ||
+          lexBracket() ||
+          lexColon() ||
+          lexSpread() ||
+          lexIdentifier() ||
+          fail()
+        );
+      }
       trim();
     }
     if (expressions[i]) {
