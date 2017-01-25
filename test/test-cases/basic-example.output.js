@@ -9,7 +9,8 @@ let imageQuery = {
     square: true,
     small: true,
     large: true
-  }
+  },
+  fieldWith1Numbers: true
 };
 const eventQuery = {
   date: true,

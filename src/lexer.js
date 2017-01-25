@@ -79,7 +79,7 @@ function lex({quasis, expressions}) {
       return null;
     }
     function lexIdentifier() {
-      const match = /^[a-zA-Z]+\b/.exec(str);
+      const match = /^[a-zA-Z][a-zA-Z0-9]*\b/.exec(str);
       if (match) {
         str = str.substr(match[0].length);
         return {type: 'Identifier', val: match[0], line};

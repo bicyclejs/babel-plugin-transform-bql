@@ -6,6 +6,7 @@ let imageQuery = bql`
     small
     large
   }
+  fieldWith1Numbers
 `;
 const eventQuery = bql`
   date
