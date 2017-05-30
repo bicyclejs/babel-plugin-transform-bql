@@ -11,29 +11,31 @@ const buildHelper = template(`
     const result = {};
     let firstQueryUpdated = false;
     let secondQueryUpdated = false;
-    Object.keys(firstQuery).forEach(key => {
-      if (!secondQuery[key]) {
-        firstQueryUpdated = true;
-        result[key] = firstQuery[key];
-      } else if (firstQuery[key] !== secondQuery[key]) {
-        result[key] = MERGE_QUERIES(firstQuery[key], secondQuery[key]);
-        if (result[key] !== secondQuery[key]) {
+    for (let key in firstQuery) {
+      if (key in firstQuery) {
+        if (!secondQuery[key]) {
           firstQueryUpdated = true;
-          secondQueryUpdated = true;
+          result[key] = firstQuery[key];
+        } else if (firstQuery[key] !== secondQuery[key]) {
+          result[key] = MERGE_QUERIES(firstQuery[key], secondQuery[key]);
+          if (result[key] !== secondQuery[key]) {
+            firstQueryUpdated = true;
+            secondQueryUpdated = true;
+          }
+        } else {
+          result[key] = firstQuery[key];
         }
-      } else {
-        result[key] = firstQuery[key];
       }
-    });
+    }
     if (!firstQueryUpdated) {
       return secondQuery;
     }
-    Object.keys(secondQuery).forEach(key => {
-      if (!result[key]) {
+    for (let key in secondQuery) {
+      if ((key in secondQuery) && !result[key]) {
         secondQueryUpdated = true;
         result[key] = secondQuery[key];
       }
-    });
+    }
     return secondQueryUpdated ? result : firstQuery;
   }
 `);

@@ -14,7 +14,11 @@
   },
   "devDependencies": {
     "babel-cli": "^6.4.0",
-    "babel-core": "^6.7.2",
+    "babel-core": "^6.24.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-es2015-classes": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-forbeslindesay": "^2.0.1",
     "eslint": "^2.4.0",
     "eslint-config-forbeslindesay": "^1.0.0",
