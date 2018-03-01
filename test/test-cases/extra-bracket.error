@@ -1,0 +1,9 @@
+extra-bracket.js: Unexpected token Bracket
+
+   5 |         b
+   6 |       }
+>  7 |     }
+     |     ^
+   8 |     b
+   9 |   `,
+  10 | );

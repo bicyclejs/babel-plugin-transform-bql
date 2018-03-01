@@ -2,13 +2,16 @@ import getError from 'babel-code-frame';
 
 const BRACKETS = ['(', ')', '{', '}'];
 
+function trimStart(str) {
+  return str.replace(/^\s+/, '');
+}
 function lex({quasis, expressions}, file) {
   const tokens = [];
   quasis.forEach((quasi, i) => {
     let str = quasi.value.raw;
     function trim() {
-      while (str !== str.trim() || str[0] === ',') {
-        str = str.trim();
+      while (str !== trimStart(str) || str[0] === ',') {
+        str = trimStart(str);
         if (str[0] === ',') str = str.substr(1);
       }
     }
@@ -103,10 +106,11 @@ function lex({quasis, expressions}, file) {
     }
     function getLocation() {
       let {line, column} = quasi.loc.start;
+      column++;
       for (let i = 0; i < quasi.value.raw.length - str.length; i++) {
         if (quasi.value.raw[i] === '\n') {
           line++;
-          column = 0;
+          column = 1;
         } else {
           column++;
         }

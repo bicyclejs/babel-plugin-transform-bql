@@ -1,0 +1,4 @@
+duplicate-arg-2.js: Duplicate argument with name "size"
+
+> 1 | bql`imageURL(size: "foo", size: "bar")`;
+    |                           ^

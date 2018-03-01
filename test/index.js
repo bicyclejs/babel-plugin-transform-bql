@@ -96,7 +96,9 @@ function testError(name, debugMode) {
   });
 }
 testError('duplicate-arg');
+testError('duplicate-arg-2');
 testError('duplicate-key');
+testError('extra-bracket');
 testError('missmatched-brackets');
 testError('missmatched-brackets-2');
 testError('missing-closing-quote');
