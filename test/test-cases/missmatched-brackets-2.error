@@ -1,0 +1,8 @@
+missmatched-brackets-2.js: Expected a close round brackets
+
+  1 | bql`
+> 2 |   image(size: "large" {
+    |                       ^
+  3 |     width
+  4 |     height
+  5 |     src

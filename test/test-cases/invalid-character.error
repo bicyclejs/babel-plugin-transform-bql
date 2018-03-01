@@ -1,0 +1,8 @@
+invalid-character.js: Unexpected character "="
+
+  1 | bql`
+> 2 |   image(size="foo") {
+    |             ^
+  3 |     width
+  4 |     height
+  5 |     src

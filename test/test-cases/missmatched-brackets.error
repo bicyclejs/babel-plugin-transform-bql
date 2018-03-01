@@ -1,0 +1,8 @@
+missmatched-brackets.js: Expected an expression, string, boolean or number
+
+  1 | bql`
+> 2 |   image(size: {
+    |               ^
+  3 |     width
+  4 |     height
+  5 |     src

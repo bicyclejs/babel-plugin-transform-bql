@@ -170,9 +170,10 @@ export default function (babel) {
     visitor: {
       TaggedTemplateExpression(path) {
         if (isBqlReference(path.node.tag)) {
-          const tokens = lex(path.node.quasi);
-          const ast = parse(tokens);
+          const tokens = lex(path.node.quasi, this.file);
+          const ast = parse(tokens, this.file);
           const transformed = codeGen(t, ast, {
+            file: this.file,
             getMergeBqlQueries: () => {
               return getMergeBqlQueries(this.file);
             },

@@ -1,13 +1,21 @@
-import assert from 'assert';
+import getError from 'babel-code-frame';
 
-function codeGen(t, ast, {getMergeBqlQueries}) {
+function codeGen(t, ast, {getMergeBqlQueries, file}) {
   getMergeBqlQueries();
+  function error(msg, node) {
+    throw new Error(msg + '\n\n' + getError(file.code, node.loc.start.line, node.loc.start.column));
+  }
+  function assert(value, msg, node) {
+    if (!value) {
+      throw error(msg, node);
+    }
+  }
   const JSONStringify = t.memberExpression(
     t.identifier('JSON'),
     t.identifier('stringify'),
   );
   function genFieldSet(ast) {
-    assert(ast.type === 'FieldSet');
+    assert(ast.type === 'FieldSet', 'Expected FieldSet', ast);
     const properties = ast.body.filter(
       node => node.type !== 'Spread' && node.type !== 'Conditional',
     ).map(genNode);
@@ -45,7 +53,7 @@ function codeGen(t, ast, {getMergeBqlQueries}) {
     return value.type === 'String' || value.type === 'Bool' || value.type === 'Number';
   }
   function genField(ast) {
-    assert(ast.type === 'Field');
+    assert(ast.type === 'Field', 'Expected Field', ast);
     const name = ast.name;
     let value = null;
     if (ast.body) {
@@ -56,8 +64,8 @@ function codeGen(t, ast, {getMergeBqlQueries}) {
     if (!ast.args || ast.args.length === 0) {
       return t.objectProperty(
         ast.alias
-        ? t.stringLiteral(name + ' as ' + ast.alias)
-        : t.identifier(name),
+          ? t.stringLiteral(name + ' as ' + ast.alias)
+          : t.identifier(name),
         value,
       );
     } else {
@@ -73,7 +81,7 @@ function codeGen(t, ast, {getMergeBqlQueries}) {
         }
       }
       args.forEach((arg, i) => {
-        assert(arg.type === 'Arg');
+        assert(arg.type === 'Arg', 'Expected Arg', arg);
         if (i !== 0) {
           push(',');
         }
@@ -96,11 +104,11 @@ function codeGen(t, ast, {getMergeBqlQueries}) {
           parts.map(
             part => (
               typeof part === 'string'
-              ? t.stringLiteral(part)
-              : t.callExpression(
-                JSONStringify,
-                [part]
-              )
+                ? t.stringLiteral(part)
+                : t.callExpression(
+                  JSONStringify,
+                  [part]
+                )
             ),
           ).reduce((left, right) => t.binaryExpression(
             '+',
@@ -120,7 +128,7 @@ function codeGen(t, ast, {getMergeBqlQueries}) {
       case 'Field':
         return genField(ast);
       default:
-        throw new Error('Unexpeced node type ' + ast.type);
+        throw error('Unexpeced node type ' + ast.type, ast);
     }
   }
   return genNode(ast);
