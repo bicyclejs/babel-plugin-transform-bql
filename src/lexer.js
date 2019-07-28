@@ -1,4 +1,4 @@
-import getError from 'babel-code-frame';
+import getError from '@babel/code-frame';
 
 const BRACKETS = ['(', ')', '{', '}'];
 

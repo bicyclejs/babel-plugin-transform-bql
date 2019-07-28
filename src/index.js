@@ -1,4 +1,4 @@
-import template from 'babel-template';
+import template from '@babel/template';
 import lex from './lexer';
 import parse from './parser';
 import codeGen from './code-gen';

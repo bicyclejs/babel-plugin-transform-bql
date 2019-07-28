@@ -1,5 +1,5 @@
 import TokenStream from 'token-stream';
-import getError from 'babel-code-frame';
+import getError from '@babel/code-frame';
 
 function parse(tokens, file) {
   tokens = new TokenStream(tokens);

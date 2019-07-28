@@ -1,4 +1,4 @@
-import getError from 'babel-code-frame';
+import getError from '@babel/code-frame';
 
 function codeGen(t, ast, {getMergeBqlQueries, file}) {
   getMergeBqlQueries();

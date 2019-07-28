@@ -1,11 +1,10 @@
 import assert from 'assert';
 import fs from 'fs';
 import test from 'testit';
-import { transformFileSync } from 'babel-core';
-import babelPluginTransformClassProperties from 'babel-plugin-transform-class-properties';
-import babelPluginTransformClasses from 'babel-plugin-transform-es2015-classes';
-import babelPluginTransformModules from 'babel-plugin-transform-es2015-modules-commonjs';
-import babelPluginTransformRuntime from 'babel-plugin-transform-runtime';
+import { transformFileSync } from '@babel/core';
+import babelPluginTransformClassProperties from '@babel/plugin-proposal-class-properties';
+import babelPluginTransformClasses from '@babel/plugin-transform-classes';
+import babelPluginTransformModules from '@babel/plugin-transform-modules-commonjs';
 import babelPluginTransformBql from '../src';
 
 test('transforms code correctly', () => {
@@ -38,7 +37,6 @@ test('transforms code correctly with classes', () => {
         babelPluginTransformClassProperties,
         babelPluginTransformClasses,
         babelPluginTransformModules,
-        babelPluginTransformRuntime,
       ],
     },
   );
