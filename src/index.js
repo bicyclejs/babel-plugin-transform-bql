@@ -143,7 +143,6 @@ export default function (babel) {
         t.isParenthesizedExpression(path.node) ||
         t.isSequenceExpression(path.node) ||
         t.isSpreadElement(path.node) ||
-        t.isSpreadProperty(path.node) ||
         t.isStringLiteral(path.node) ||
         t.isTemplateLiteral(path.node) ||
         false
