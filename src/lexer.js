@@ -1,4 +1,4 @@
-import getError from '@babel/code-frame';
+import {codeFrameColumns} from '@babel/code-frame';
 
 const BRACKETS = ['(', ')', '{', '}'];
 
@@ -40,7 +40,10 @@ function lex({quasis, expressions}, file) {
           str = str.substr(i + 1);
           return {type: 'String', val: JSON.parse('"' + val + '"'), loc: {start, end: getLocation()}};
         } else {
-          throw new Error('Missing closing quote\n\n' + getError(file.code, start.line, start.column));
+          throw new Error(
+            (file.opts.filename || 'Unknown filename') + '\n\n' +
+            codeFrameColumns(file.code, {start, end: getLocation()}, {message: 'Missing closing quote'})
+          );
         }
       }
       return null;
@@ -120,8 +123,8 @@ function lex({quasis, expressions}, file) {
     function fail() {
       const loc = getLocation();
       throw new Error(
-        'Unexpected character ' + JSON.stringify(str[0]) + '\n\n' +
-          getError(file.code, loc.line, loc.column),
+        (file.opts.filename || 'Unknown filename') + '\n\n' +
+        codeFrameColumns(file.code, {start: loc}, {message: 'Unexpected character ' + JSON.stringify(str[0])}),
       );
     }
     trim();

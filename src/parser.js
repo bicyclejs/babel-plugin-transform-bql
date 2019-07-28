@@ -1,10 +1,13 @@
 import TokenStream from 'token-stream';
-import getError from '@babel/code-frame';
+import {codeFrameColumns} from '@babel/code-frame';
 
 function parse(tokens, file) {
   tokens = new TokenStream(tokens);
-  function error(msg, tokenOrNode) {
-    throw new Error(msg + '\n\n' + getError(file.code, tokenOrNode.loc.start.line, tokenOrNode.loc.start.column));
+  function error(message, tokenOrNode) {
+    throw new Error(
+      (file.opts.filename || 'Unknown filename') + '\n\n' +
+      codeFrameColumns(file.code, tokenOrNode.loc, {message})
+    );
   }
   function assert(value, msg, token) {
     if (!value) {
@@ -37,7 +40,7 @@ function parse(tokens, file) {
     while (tokens.peek().type !== 'Bracket') {
       const arg = parseArg();
       if (args.some(a => a.name === arg.name)) {
-        throw error('Duplicate argument with name ' + JSON.stringify(arg.name), arg);
+        throw error('Duplicate argument ' + JSON.stringify(arg.name), arg);
       }
       args.push(arg);
 
@@ -63,7 +66,7 @@ function parse(tokens, file) {
     assert(keyword.type === 'Keyword' && keyword.val === 'as', 'Expected "as" keyword', keyword);
     const identifier = tokens.advance();
     assert(identifier.type === 'Identifier', 'Expected identifier', identifier);
-    return identifier.val;
+    return identifier;
 
   }
   function parseField() {
@@ -82,13 +85,13 @@ function parse(tokens, file) {
     if (tokens.peek().type === 'Keyword' && tokens.peek().val === 'as') {
       end = tokens.peek().loc.end;
       alias = parseAlias();
-      if (alias === identifier.val) alias = null;
+      if (alias.val === identifier.val) alias = null;
     }
     if (tokens.peek().type === 'Bracket' && tokens.peek().val === '{') {
       body = parseFieldSet();
       end = body.loc.end;
     }
-    return {type: 'Field', name: identifier.val, args, alias, body, loc: {start: identifier.loc.start, end}};
+    return {type: 'Field', name: identifier, args, alias, body, loc: {start: identifier.loc.start, end}};
   }
   function parseSpread() {
     const spread = tokens.advance();
@@ -124,20 +127,20 @@ function parse(tokens, file) {
         case 'Identifier':
           const field = parseField();
           assert(
-            typeof field.name === 'string',
-            'Field.name should be a string',
-            field,
+            typeof field.name.val === 'string',
+            'Field.name.val should be a string',
+            field.name,
           );
           assert(
-            field.alias === null || typeof field.alias === 'string',
+            field.alias === null || typeof field.alias.val === 'string',
             'Field.alias should be a string or null',
-            field,
+            field.alias || field,
           );
           const fieldName = field.alias || field.name;
-          if (usedIdentifiers.indexOf(fieldName) !== -1) {
-            throw error('Duplicate key ' + JSON.stringify(fieldName), field);
+          if (usedIdentifiers.indexOf(fieldName.val) !== -1) {
+            throw error('Duplicate key ' + JSON.stringify(fieldName.val), fieldName);
           }
-          usedIdentifiers.push(fieldName);
+          usedIdentifiers.push(fieldName.val);
           body.push(field);
           break;
         case 'Spread':

@@ -1,9 +1,12 @@
-import getError from '@babel/code-frame';
+import {codeFrameColumns} from '@babel/code-frame';
 
 function codeGen(t, ast, {getMergeBqlQueries, file}) {
   getMergeBqlQueries();
-  function error(msg, node) {
-    throw new Error(msg + '\n\n' + getError(file.code, node.loc.start.line, node.loc.start.column));
+  function error(message, node) {
+    throw new Error(
+      (file.opts.filename || 'Unknown filename') + '\n\n' +
+      codeFrameColumns(file.code, node.loc, {message})
+    );
   }
   function assert(value, msg, node) {
     if (!value) {
@@ -54,7 +57,7 @@ function codeGen(t, ast, {getMergeBqlQueries, file}) {
   }
   function genField(ast) {
     assert(ast.type === 'Field', 'Expected Field', ast);
-    const name = ast.name;
+    const name = ast.name.val;
     let value = null;
     if (ast.body) {
       value = genFieldSet(ast.body);
@@ -64,7 +67,7 @@ function codeGen(t, ast, {getMergeBqlQueries, file}) {
     if (!ast.args || ast.args.length === 0) {
       return t.objectProperty(
         ast.alias
-          ? t.stringLiteral(name + ' as ' + ast.alias)
+          ? t.stringLiteral(name + ' as ' + ast.alias.val)
           : t.identifier(name),
         value,
       );
@@ -95,7 +98,7 @@ function codeGen(t, ast, {getMergeBqlQueries, file}) {
       });
       push(')');
       if (ast.alias) {
-        push(' as ' + ast.alias);
+        push(' as ' + ast.alias.val);
       }
       if (parts.length === 1) {
         return t.objectProperty(t.stringLiteral(parts[0]), value);

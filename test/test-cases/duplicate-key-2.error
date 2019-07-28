@@ -1,0 +1,9 @@
+duplicate-key-2.js
+
+  1 | bql`
+  2 |   name
+> 3 |   image(size: "foo") as name {
+    |                         ^^^^ Duplicate key "name"
+  4 |     width
+  5 |     height
+  6 |     src

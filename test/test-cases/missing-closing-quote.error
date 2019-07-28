@@ -1,8 +1,8 @@
-missing-closing-quote.js: Missing closing quote
+missing-closing-quote.js
 
   1 | bql`
 > 2 |   image(size: "foo) {
-    |               ^
+    |               ^ Missing closing quote
   3 |     width
   4 |     height
   5 |     src
